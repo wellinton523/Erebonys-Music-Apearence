@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erebonys Music</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Album Art -->
+        <div class="album-container">
+            <div class="album-art" id="albumArt">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%237c3aed' width='400' height='400'/%3E%3Ccircle cx='200' cy='200' r='80' fill='none' stroke='white' stroke-width='8'/%3E%3Ccircle cx='200' cy='200' r='35' fill='white'/%3E%3C/svg%3E" alt="Album">
+            </div>
+        </div>
+
+        <!-- Song Info -->
+        <div class="song-info">
+            <h2 id="songTitle">Selecione uma música</h2>
+            <p id="artistName">Nenhuma música selecionada</p>
+            <p id="durationInfo">0:00 / 0:00</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <input type="range" id="progressSlider" class="slider" value="0" min="0" max="100">
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="control-btn" id="btnPrevious">
+                <span>⏮</span>
+            </button>
+            <button class="control-btn play-btn" id="btnPlay">
+                <span>▶</span>
+            </button>
+            <button class="control-btn" id="btnNext">
+                <span>⏭</span>
+            </button>
+        </div>
+
+        <!-- Volume Control -->
+        <div class="volume-control">
+            <label for="volumeSlider">🔊</label>
+            <input type="range" id="volumeSlider" class="volume-slider" value="70" min="0" max="100">
+        </div>
+
+        <!-- Playlist -->
+        <div class="playlist-container">
+            <h3>Playlist</h3>
+            <div class="playlist" id="playlist">
+                <div class="playlist-item" onclick="playMusic(0)">
+                    <span class="music-icon">🎵</span>
+                    <div>
+                        <p class="music-title">Música 1</p>
+                        <p class="music-artist">Artista Desconhecido</p>
+                    </div>
+                </div>
+                <div class="playlist-item" onclick="playMusic(1)">
+                    <span class="music-icon">🎵</span>
+                    <div>
+                        <p class="music-title">Música 2</p>
+                        <p class="music-artist">Artista Desconhecido</p>
+                    </div>
+                </div>
+                <div class="playlist-item" onclick="playMusic(2)">
+                    <span class="music-icon">🎵</span>
+                    <div>
+                        <p class="music-title">Música 3</p>
+                        <p class="music-artist">Artista Desconhecido</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="action-buttons">
+            <button id="btnLoadMusic" class="action-btn">📁 Carregar Músicas</button>
+            <button id="btnSearch" class="action-btn">🔍 Buscar Spotify</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
