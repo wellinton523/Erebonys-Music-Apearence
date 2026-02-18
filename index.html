@@ -5,17 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erebonys Music</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="app/src/main/assets/vendor/bootstrap.min.css">
 </head>
-<body>
+<body class="bg-dark text-white">
     <div class="container">
         
         <!-- Total-musicas -->
-        <div class="card text-center">
-            <h3>Total</h3>
-            <h2>3</h2>
+        <div id="card-local" class="card card-b-p text-center" style="cursor: pointer;">
+            <div class="card-header">
+                <h3>Total Local</h3>
+                <hr>
+            </div>
+            <div class="card-body">
+                <h2>3</h2>
+            </div>
         </div>
+        
+        <!-- Total-spotify -->
+        <div id="card-spotify" class="card card-b-sp text-center" style="cursor: pointer;">
+            <div class="card-header">
+                <h3>Total Spotify</h3>
+                <hr>
+            </div>
+            <div class="card-body">
+                <h2>3</h2>
+            </div>
+        </div>
+    </div>
 
+    <!-- lista -->
+
+    <div class="card">
+            <button class="btn btn-outline-light btn-sm m-3" data-bs-toggle="modal" data-bs-target="#configModal">⚙️ Configurações</button>
+        <div class="card-header text-center">
+            <h2 id="list-title">Lista Local</h2>
+        </div>
+        <div class="card-body">
+            <ul id="list-local" class="music-list">
+                <li class="music-item d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <img src="capa1.png" alt="Capa" class="music-img-list">
+                        <div class="ms-3 d-flex flex-column">
+                            <span class="music-name-list">Biosphere - Slowed</span>
+                            <span class="producer-name-list">CaraQueFez</span>
+                        </div>
+                    </div>
+                    <span class="duration-list">3:45</span>
+                </li>
+                </ul>
+
+            <ul id="list-spotify" class="music-list d-none">
+                <li class="music-item d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <img src="capa-spotify.png" alt="Capa" class="music-img-list">
+                        <div class="ms-3 d-flex flex-column">
+                            <span class="music-name-list">Blinding Lights</span>
+                            <span class="producer-name-list">The Weeknd</span>
+                        </div>
+                    </div>
+                    <span class="duration-list">3:20</span>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <!-- playing -->
@@ -26,15 +77,54 @@
             <img class="plaing-cover" src="image.png" alt="music">
 
             <div class="names">
-                <span class="music-name"></span>
-                <span class="producer-name"></span>
+                <span class="music-name">Biosphere - Slowed</span>
+                <span class="producer-name">CaraQueFez</span>
             </div>
         </div>
-        
 
+        <div class="progress-container">
+            <span class="time" id="durationInfo">0:00</span>
+            <input type="range" id="progressSlider" min="0" max="100" value="0" class="progress-slider">
+            <span class="time">3:00</span>
+        </div>
+        <!-- Botões de Controle -->
+        <div class="controls-buttons">
+            <button id="btnPrevious" class="btn-control" title="Anterior">
+                <span>⏮️</span>
+            </button>
+            <button id="btnPlay" class="btn-control btn-play" title="Play/Pausa">
+                <span>▶️</span>
+            </button>
+            <button id="btnNext" class="btn-control" title="Próxima">
+                <span>⏭️</span>
+            </button>
+        </div>
+
+    </div>
+
+
+    <div class="modal fade" id="configModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header">
+                <h5 class="modal-title">Configurações</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Músicas Locais</h6>
+                <input type="file" id="folderInput" webkitdirectory directory multiple class="form-control bg-black text-white border-secondary">
+                <small class="text-secondary">Selecione a pasta onde suas músicas estão.</small>
+                
+                <hr class="border-secondary">
+                
+                <h6>Spotify</h6>
+                <button id="btn-login-spotify" class="btn btn-success w-100">Logar com Spotify</button>
+            </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-<script src="vendor/bootstrap.bundle.min.js"></script>
+<script src="app/src/main/assets/vendor/bootstrap.bundle.min.js"></script>
 </html>

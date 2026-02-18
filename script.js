@@ -1,230 +1,102 @@
-// Estado do player
-const player = {
-    isPlaying: false,
-    currentTrack: 0,
-    volume: 70,
-    tracks: [
-        { title: 'Música 1', artist: 'Artista 1', duration: 240 },
-        { title: 'Música 2', artist: 'Artista 2', duration: 180 },
-        { title: 'Música 3', artist: 'Artista 3', duration: 200 }
-    ]
-};
+const folderInput = document.getElementById('folderInput');
+const listLocal = document.getElementById('list-local');
 
-// Elementos DOM
-const btnPlay = document.getElementById('btnPlay');
-const btnNext = document.getElementById('btnNext');
-const btnPrevious = document.getElementById('btnPrevious');
-const btnLoadMusic = document.getElementById('btnLoadMusic');
-const btnSearch = document.getElementById('btnSearch');
-const songTitle = document.getElementById('songTitle');
-const artistName = document.getElementById('artistName');
-const durationInfo = document.getElementById('durationInfo');
-const progressSlider = document.getElementById('progressSlider');
-const volumeSlider = document.getElementById('volumeSlider');
-const albumArt = document.getElementById('albumArt');
+folderInput.addEventListener('change', (event) => {
+    const files = event.target.files;
+    listLocal.innerHTML = ''; // Limpa a lista atual
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    updateUI();
-    setupEventListeners();
-});
-
-// Setup event listeners
-function setupEventListeners() {
-    btnPlay.addEventListener('click', togglePlay);
-    btnNext.addEventListener('click', nextTrack);
-    btnPrevious.addEventListener('click', previousTrack);
-    volumeSlider.addEventListener('change', setVolume);
-    progressSlider.addEventListener('change', seek);
-    btnLoadMusic.addEventListener('click', loadMusic);
-    btnSearch.addEventListener('click', searchSpotify);
-}
-
-// Toggle play/pause
-function togglePlay() {
-    player.isPlaying = !player.isPlaying;
-    updateUI();
-    
-    if (typeof Android !== 'undefined' && Android.playMusic) {
-        Android.playMusic(player.isPlaying, player.currentTrack);
-    }
-}
-
-// Next track
-function nextTrack() {
-    player.currentTrack = (player.currentTrack + 1) % player.tracks.length;
-    player.isPlaying = true;
-    updateUI();
-    
-    if (typeof Android !== 'undefined' && Android.nextTrack) {
-        Android.nextTrack(player.currentTrack);
-    }
-}
-
-// Previous track
-function previousTrack() {
-    player.currentTrack = (player.currentTrack - 1 + player.tracks.length) % player.tracks.length;
-    player.isPlaying = true;
-    updateUI();
-    
-    if (typeof Android !== 'undefined' && Android.previousTrack) {
-        Android.previousTrack(player.currentTrack);
-    }
-}
-
-// Play music by index
-function playMusic(index) {
-    player.currentTrack = index;
-    player.isPlaying = true;
-    updateUI();
-    
-    if (typeof Android !== 'undefined' && Android.playMusic) {
-        Android.playMusic(true, index);
-    }
-}
-
-// Set volume
-function setVolume() {
-    player.volume = volumeSlider.value;
-    
-    if (typeof Android !== 'undefined' && Android.setVolume) {
-        Android.setVolume(player.volume);
-    }
-}
-
-// Seek to position
-function seek() {
-    const position = progressSlider.value;
-    
-    if (typeof Android !== 'undefined' && Android.seek) {
-        Android.seek(position);
-    }
-}
-
-// Load music files
-function loadMusic() {
-    console.log('Carregando músicas...');
-    
-    if (typeof Android !== 'undefined' && Android.loadMusicFiles) {
-        Android.loadMusicFiles();
-    } else {
-        alert('Funcionalidade disponível apenas no app Android');
-    }
-}
-
-// Search Spotify
-function searchSpotify() {
-    const query = prompt('Digite o nome da música ou artista:');
-    
-    if (query) {
-        console.log('Buscando:', query);
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         
-        if (typeof Android !== 'undefined' && Android.searchSpotify) {
-            Android.searchSpotify(query);
-        } else {
-            alert('Funcionalidade Spotify será adicionada em breve!');
+        // Filtra apenas arquivos de áudio
+        if (file.type.startsWith('audio/')) {
+            const url = URL.createObjectURL(file); // Cria um caminho temporário para o áudio
+            
+            // Cria o item da lista usando sua estrutura
+            const li = document.createElement('li');
+            li.className = 'music-item d-flex align-items-center justify-content-between';
+            li.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <img src="default-cover.png" class="music-img-list">
+                    <div class="ms-3 d-flex flex-column">
+                        <span class="music-name-list">${file.name.replace(/\.[^/.]+$/, "")}</span>
+                        <span class="producer-name-list">Arquivo Local</span>
+                    </div>
+                </div>
+                <span class="duration-list">--:--</span>
+            `;
+            
+            // Evento para tocar ao clicar
+            li.onclick = () => playMusic(file.name, "Local", "default-cover.png", url);
+            listLocal.appendChild(li);
         }
     }
-}
+    alert(`${files.length} arquivos analisados!`);
+});
 
-// Update UI
-function updateUI() {
-    const track = player.tracks[player.currentTrack];
+document.getElementById('folderInput').addEventListener('change', function(event) {
+    const files = event.target.files; // Todos os arquivos da pasta
+    const listaLocalUI = document.getElementById('list-local');
+    const totalLocalDisplay = document.querySelector('.card-b-p h2');
     
-    // Update song info
-    songTitle.textContent = track.title;
-    artistName.textContent = track.artist;
-    durationInfo.textContent = formatTime(0) + ' / ' + formatTime(track.duration);
-    
-    // Update play button
-    btnPlay.innerHTML = player.isPlaying ? '<span>⏸</span>' : '<span>▶</span>';
-    
-    // Rotate album if playing
-    if (player.isPlaying) {
-        albumArt.style.animationPlayState = 'running';
-    } else {
-        albumArt.style.animationPlayState = 'paused';
-    }
-    
-    // Update volume slider
-    volumeSlider.value = player.volume;
-}
+    // Limpa a lista atual para carregar a nova pasta
+    listaLocalUI.innerHTML = '';
+    let musicCount = 0;
 
-// Format time (seconds to MM:SS)
-function formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-}
+    // Converter a lista de arquivos em um array e filtrar apenas áudios
+    Array.from(files).forEach(file => {
+        if (file.type.startsWith('audio/') || file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
+            musicCount++;
+            
+            // Criar a URL temporária para tocar a música
+            const musicURL = URL.createObjectURL(file);
+            
+            // Criar o elemento visual (sua estrutura de lista)
+            const li = document.createElement('li');
+            li.className = 'music-item d-flex align-items-center justify-content-between';
+            
+            li.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <img src="image.png" alt="Capa" class="music-img-list">
+                    <div class="ms-3 d-flex flex-column text-start">
+                        <span class="music-name-list">${file.name.replace(/\.[^/.]+$/, "")}</span>
+                        <span class="producer-name-list text-secondary">Arquivo Local</span>
+                    </div>
+                </div>
+                <span class="duration-list">--:--</span>
+            `;
 
-// Java bridge functions (chamadas do Android)
-function updateProgress(currentTime, duration) {
-    progressSlider.value = (currentTime / duration) * 100;
-    durationInfo.textContent = formatTime(currentTime) + ' / ' + formatTime(duration);
-}
+            // Evento de clique para tocar a música
+            li.onclick = function() {
+                tocarMusica(file.name, "Local", "image.png", musicURL);
+            };
 
-function updatePlaylist(tracks) {
-    if (tracks && tracks.length > 0) {
-        player.tracks = tracks;
-        updateUI();
-        updatePlaylistUI();
-    }
-}
-
-function updatePlaylistUI() {
-    const playlistDiv = document.getElementById('playlist');
-    playlistDiv.innerHTML = '';
-    
-    player.tracks.forEach((track, index) => {
-        const item = document.createElement('div');
-        item.className = 'playlist-item' + (index === player.currentTrack ? ' active' : '');
-        item.onclick = () => playMusic(index);
-        item.innerHTML = `
-            <span class="music-icon">🎵</span>
-            <div>
-                <p class="music-title">${track.title}</p>
-                <p class="music-artist">${track.artist}</p>
-            </div>
-        `;
-        playlistDiv.appendChild(item);
+            listaLocalUI.appendChild(li);
+        }
     });
+
+    // Atualiza o contador de músicas no card do topo
+    totalLocalDisplay.innerText = musicCount;
+
+    // Fechar o modal automaticamente após selecionar (usando Bootstrap)
+    const modalElement = document.getElementById('configModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    modalInstance.hide();
+});
+
+// Função para atualizar o Player Inferior
+function tocarMusica(nome, autor, capa, url) {
+    const audioPlayer = document.querySelector('audio') || new Audio();
+    
+    // Atualiza a interface do Player
+    document.querySelector('.music-name').innerText = nome;
+    document.querySelector('.producer-name').innerText = autor;
+    document.querySelector('.plaing-cover').src = capa;
+    
+    // Toca o som
+    audioPlayer.src = url;
+    audioPlayer.play();
+    
+    // Se o seu botão de play tiver um ícone, mude para "Pause"
+    document.getElementById('btnPlay').innerHTML = "<span>⏸️</span>";
 }
-
-function showSpotifyResults(results) {
-    alert('Resultados do Spotify:\n' + results);
-}
-
-// Simular progresso da música
-let simulationInterval;
-function startProgressSimulation() {
-    if (player.isPlaying && simulationInterval === undefined) {
-        let currentTime = 0;
-        const track = player.tracks[player.currentTrack];
-        simulationInterval = setInterval(() => {
-            if (player.isPlaying) {
-                currentTime += 0.1;
-                if (currentTime >= track.duration) {
-                    clearInterval(simulationInterval);
-                    simulationInterval = undefined;
-                    nextTrack();
-                } else {
-                    updateProgress(currentTime, track.duration);
-                }
-            }
-        }, 100);
-    }
-}
-
-// Override togglePlay para incluir simulação
-const originalTogglePlay = togglePlay;
-window.togglePlay = function() {
-    originalTogglePlay();
-    if (player.isPlaying) {
-        startProgressSimulation();
-    } else {
-        clearInterval(simulationInterval);
-        simulationInterval = undefined;
-    }
-};
-
-console.log('Script carregado com sucesso!');
