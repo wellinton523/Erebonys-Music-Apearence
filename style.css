@@ -6,17 +6,18 @@
     background-color: black;
 }
 
-.playing .collapsed{
+.playing.collapsed{
     border-radius: 15px;
     bottom: 1px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     height: 20vh;
 }
 
-.playing .collapsed img{
-    height: 100px;
+.playing .plaing-cover{
+    height: 4em;
     border-radius: 15px;
+    margin: 0.3em;
 }
 
 .names{
