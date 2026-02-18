@@ -1,0 +1,32 @@
+.card-b-p{
+    background-color: black;
+}
+
+.playing{
+    background-color: black;
+}
+
+.playing .collapsed{
+    bottom: 1px;
+    display: flex;
+    justify-content: space-around;
+    height: 10vh;
+}
+
+.playing .collapsed img{
+    height: 100%;
+}
+
+.names{
+    display: flex;
+    flex-direction: column;
+}
+
+.names .music-name{
+    color: rgb(255, 255, 255);
+}
+
+.names .producer-name{
+    color: rgb(88, 88, 88);
+    font-size: small;
+}
